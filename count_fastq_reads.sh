@@ -63,6 +63,10 @@ else
   DECOMPRESS="cat"
 fi
 
+# Record start time
+start_time=$(date +%s)
+echo "Job started at: $(date)"
+
 echo "Counting reads in ${FASTQ_DIR} (*_1.${FASTQ_EXT}) -> ${OUTPUT_FILE}"
 # initialize output (with header)
 printf "sample\treads\n" > "$OUTPUT_FILE"
@@ -76,4 +80,16 @@ for fq1 in "${FASTQ_DIR}"/*_1."$FASTQ_EXT"; do
   printf "%s\t%s\n" "$sample" "$reads" >> "$OUTPUT_FILE"
 done
 
+# Record end time
+end_time=$(date +%s)
+echo "Job finished at: $(date)"
+
+# Compute elapsed time
+elapsed=$(( end_time - start_time ))
+days=$(( elapsed / 86400 ))
+hours=$(( elapsed / 3600 ))
+mins=$(( (elapsed % 3600) / 60 ))
+secs=$(( elapsed % 60 ))
+
+echo "Total elapsed time: ${days}d ${hours}h ${mins}m ${secs}s"
 echo "Done. Results written to $(realpath "$OUTPUT_FILE")"
